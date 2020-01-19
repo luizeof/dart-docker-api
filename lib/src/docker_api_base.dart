@@ -128,7 +128,7 @@ class DockerAPI {
   }
 
   /// Return a new instance of Remote Docker API without Auth
-  static Future<DockerAPI> connectRemoteNoAuth(String _hostname) async {
+  static Future<DockerAPI> connectRemoteWithoutAuth(String _hostname) async {
     var api = new DockerAPI(
       _hostname,
       useBasicAuth: false,
