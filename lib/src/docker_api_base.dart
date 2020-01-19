@@ -107,6 +107,7 @@ class DockerAPI {
     _dio.options.headers = (<String, String>{'authorization': basicAuth});
   }
 
+  /// Return a new instance of Docker API
   static Future<DockerAPI> connect(String _hostname,
       [String _username, String _password]) async {
     var api = new DockerAPI(_hostname, _username, _password);
