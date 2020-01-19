@@ -6,8 +6,6 @@ import 'dart:convert';
 /// Docker API
 class DockerAPI {
   final String _hostname;
-  final String _username;
-  final String _password;
   double _imagesDiskUsage = 0;
   double _containersDiskUsage = 0;
   double _volumesDiskUsage = 0;
@@ -97,20 +95,44 @@ class DockerAPI {
   // HTTP Wrapper
   Dio _dio;
 
-  DockerAPI(this._hostname, [this._username, this._password]) {
+  DockerAPI(this._hostname,
+      {basicAuthUsername, basicAuthPassword, useBasicAuth = false}) {
     _dio = new Dio();
     _dio.options.baseUrl = _hostname;
     _dio.options.connectTimeout = 60000;
     _dio.options.receiveTimeout = 60000;
-    String basicAuth =
-        'Basic ' + base64Encode(utf8.encode('$_username:$_password'));
-    _dio.options.headers = (<String, String>{'authorization': basicAuth});
+    if (useBasicAuth) {
+      String basicAuth = 'Basic ' +
+          base64Encode(utf8.encode('$basicAuthUsername:$basicAuthPassword'));
+      _dio.options.headers = (<String, String>{'authorization': basicAuth});
+    }
   }
 
-  /// Return a new instance of Docker API
-  static Future<DockerAPI> connect(String _hostname,
-      [String _username, String _password]) async {
-    var api = new DockerAPI(_hostname, _username, _password);
+  /// Return a new instance of Remote Docker API with HTTP Basic Auth
+  static Future<DockerAPI> connectRemoteWithBasicAuth(
+      String _hostname, String _username, String _password) async {
+    var api = new DockerAPI(
+      _hostname,
+      basicAuthUsername: _username,
+      basicAuthPassword: _password,
+      useBasicAuth: true,
+    );
+    try {
+      await api._getVersionData();
+      await api._getInfoData();
+      await api._getUsage();
+      return api;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Return a new instance of Remote Docker API without Auth
+  static Future<DockerAPI> connectRemoteNoAuth(String _hostname) async {
+    var api = new DockerAPI(
+      _hostname,
+      useBasicAuth: false,
+    );
     try {
       await api._getVersionData();
       await api._getInfoData();
