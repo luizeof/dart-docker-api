@@ -3,6 +3,8 @@ library docker_api;
 import 'package:dio/dio.dart';
 import 'dart:convert';
 
+import 'package:docker_api/src/docker_container.dart';
+
 /// Docker API
 class DockerAPI {
   final String _hostname;
@@ -196,5 +198,14 @@ class DockerAPI {
       json['Volumes']
           .forEach((e) => _volumesDiskUsage += e['UsageData']["Size"]);
     } catch (e) {}
+  }
+
+  Future<DockerContainer> getContainerByID(String _hashid) async {
+    var data = await _dio.get('/containers/$_hashid/json');
+    try {
+      var json = jsonDecode(data.toString());
+      return DockerContainer.fromJson(json);
+    } catch (e) {}
+    return null;
   }
 }
