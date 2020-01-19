@@ -137,6 +137,7 @@ class DockerAPI {
     return double.tryParse(_value.toStringAsPrecision(3));
   }
 
+  /// Load Docker Info Data
   void _getInfoData() async {
     var data = await _dio.get("/info");
     try {
@@ -149,11 +150,10 @@ class DockerAPI {
       operatingSystem = _getString(json["OperatingSystem"]);
       dockerRootDir = _getString(json['DockerRootDir']);
       return json;
-    } catch (e) {
-      return null;
-    }
+    } catch (e) {}
   }
 
+  /// Load Docker Version Data
   void _getVersionData() async {
     var data = await _dio.get("/version");
     try {
@@ -165,11 +165,10 @@ class DockerAPI {
       platformArchitecture = _getString(json['Arch']);
       kernelVersion = _getString(json['KernelVersion']);
       return json;
-    } catch (e) {
-      return null;
-    }
+    } catch (e) {}
   }
 
+  /// Load Docker Usage Data
   void _getUsage() async {
     var data = await _dio.get("/system/df");
     try {
