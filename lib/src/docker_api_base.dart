@@ -202,10 +202,10 @@ class DockerAPI {
 
   Future<DockerContainer> getContainerByID(String _hashid) async {
     var data = await _dio.get('/containers/$_hashid/json');
-    try {
-      var json = jsonDecode(data.toString());
-      return DockerContainer.fromJson(json);
-    } catch (e) {}
-    return null;
+    //   try {
+    var json = jsonDecode(data.toString());
+    return DockerContainer.fromJson(json);
+    //   } catch (e) {}
+    //   return null;
   }
 }
