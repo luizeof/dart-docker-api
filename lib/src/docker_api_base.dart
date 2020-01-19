@@ -1,3 +1,5 @@
+library docker_api;
+
 import 'package:dio/dio.dart';
 import 'dart:convert';
 
@@ -21,6 +23,48 @@ class DockerAPI {
   int numImages;
   int cpuCores;
   int memoryTotal;
+  double _imagesDiskUsage = 0;
+  double _containersDiskUsage = 0;
+  double _volumesDiskUsage = 0;
+
+  /// Images Space Usage in Bytes
+  double get imagesDiskUsageBytes => _imagesDiskUsage;
+
+  /// Images Space Usage in KiloBytes
+  double get imagesDiskUsageKB => _roundBytes(imagesDiskUsageBytes / 1000);
+
+  /// Images Space Usage in MegaBytes
+  double get imagesDiskUsageMB => _roundBytes(imagesDiskUsageKB / 1000);
+
+  /// Images Space Usage in GigaBytes
+  double get imagesDiskUsageGB => _roundBytes(imagesDiskUsageMB / 1000);
+
+  /// Containers Space Usage in Bytes
+  double get containersDiskUsageBytes => _containersDiskUsage;
+
+  /// Containers Space Usage in KiloBytes
+  double get containersDiskUsageKB =>
+      _roundBytes(containersDiskUsageBytes / 1000);
+
+  /// Containers Space Usage in MegaBytes
+  double get containersDiskUsageMB => _roundBytes(containersDiskUsageKB / 1000);
+
+  /// Containers Space Usage in GigaBytes
+  double get containersDiskUsageGB => _roundBytes(containersDiskUsageMB / 1000);
+
+  /// Volumes Space Usage in Bytes
+  double get volumesDiskUsageBytes => _volumesDiskUsage;
+
+  /// Volumes Space Usage in KiloBytes
+  double get volumesDiskUsageKB => _roundBytes(volumesDiskUsageBytes / 1000);
+
+  /// Volumes Space Usage in MegaBytes
+  double get volumesDiskUsageMB => _roundBytes(volumesDiskUsageKB / 1000);
+
+  /// Volumes Space Usage in GigaBytes
+  double get volumesDiskUsageGB => _roundBytes(volumesDiskUsageMB / 1000);
+
+  // HTTP Wrapper
   Dio _dio;
 
   DockerAPI(this._hostname, [this._username, this._password]) {
@@ -39,19 +83,27 @@ class DockerAPI {
     try {
       await api.getVersionData();
       await api.getInfoData();
+      await api._getUsage();
       return api;
     } catch (e) {
       return null;
     }
   }
 
+  /// Parse [data] and Return ```String```
   String _getString(dynamic data, [dynamic _ifNull = null]) {
     return (data == null) ? _ifNull : data.toString();
   }
 
+  /// Parse [data] and return ```Int```
   int _getInt(dynamic data, [dynamic _ifNull = null]) {
     var parsed = (data == null) ? _ifNull : int.tryParse(data.toString());
     return (parsed == null) ? _ifNull : parsed;
+  }
+
+  /// Round double value to precision 3
+  double _roundBytes(double _value) {
+    return double.tryParse(_value.toStringAsPrecision(3));
   }
 
   Future<dynamic> getInfoData() async {
@@ -86,5 +138,18 @@ class DockerAPI {
     } catch (e) {
       return null;
     }
+  }
+
+  void _getUsage() async {
+    var data = await _dio.get("/system/df");
+    try {
+      var json = jsonDecode(data.toString());
+
+      json['Images'].forEach((e) => _imagesDiskUsage += e['Size']);
+      json['Containers']
+          .forEach((e) => _containersDiskUsage += e['SizeRootFs']);
+      json['Volumes']
+          .forEach((e) => _volumesDiskUsage += e['UsageData']["Size"]);
+    } catch (e) {}
   }
 }
