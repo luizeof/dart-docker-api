@@ -3,6 +3,7 @@ library docker_api;
 import 'package:dio/dio.dart';
 import 'dart:convert';
 
+/// Docker API
 class DockerAPI {
   final String _hostname;
   final String _username;
@@ -110,8 +111,8 @@ class DockerAPI {
       [String _username, String _password]) async {
     var api = new DockerAPI(_hostname, _username, _password);
     try {
-      await api.getVersionData();
-      await api.getInfoData();
+      await api._getVersionData();
+      await api._getInfoData();
       await api._getUsage();
       return api;
     } catch (e) {
@@ -135,7 +136,7 @@ class DockerAPI {
     return double.tryParse(_value.toStringAsPrecision(3));
   }
 
-  Future<dynamic> getInfoData() async {
+  void _getInfoData() async {
     var data = await _dio.get("/info");
     try {
       var json = jsonDecode(data.toString());
@@ -152,7 +153,7 @@ class DockerAPI {
     }
   }
 
-  Future<dynamic> getVersionData() async {
+  void _getVersionData() async {
     var data = await _dio.get("/version");
     try {
       var json = jsonDecode(data.toString());
