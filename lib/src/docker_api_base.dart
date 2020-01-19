@@ -173,7 +173,6 @@ class DockerAPI {
     var data = await _dio.get("/system/df");
     try {
       var json = jsonDecode(data.toString());
-
       json['Images'].forEach((e) => _imagesDiskUsage += e['Size']);
       json['Containers']
           .forEach((e) => _containersDiskUsage += e['SizeRootFs']);
