@@ -111,12 +111,10 @@ class DockerAPI {
   /// Return a new instance of Remote Docker API with HTTP Basic Auth
   static Future<DockerAPI> connectRemoteWithBasicAuth(
       String _hostname, String _username, String _password) async {
-    var api = new DockerAPI(
-      _hostname,
-      basicAuthUsername: _username,
-      basicAuthPassword: _password,
-      useBasicAuth: true,
-    );
+    var api = new DockerAPI(_hostname,
+        basicAuthUsername: _username,
+        basicAuthPassword: _password,
+        useBasicAuth: true);
     try {
       await api._getVersionData();
       await api._getInfoData();
@@ -129,10 +127,7 @@ class DockerAPI {
 
   /// Return a new instance of Remote Docker API without Auth
   static Future<DockerAPI> connectRemote(String _hostname) async {
-    var api = new DockerAPI(
-      _hostname,
-      useBasicAuth: false,
-    );
+    var api = new DockerAPI(_hostname, useBasicAuth: false);
     try {
       await api._getVersionData();
       await api._getInfoData();
