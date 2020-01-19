@@ -7,25 +7,54 @@ class DockerAPI {
   final String _hostname;
   final String _username;
   final String _password;
-  String apiVersion;
-  String version;
-  String minAPIVersion;
-  String operatingSystem;
-  String goVersion;
-  String platform;
-  String platformArchitecture;
-  String kernelVersion;
-  String dockerRootDir;
-  int numContainers;
-  int numContainersRunning;
-  int numContainersPaused;
-  int numContainersStopped;
-  int numImages;
-  int cpuCores;
-  int memoryTotal;
   double _imagesDiskUsage = 0;
   double _containersDiskUsage = 0;
   double _volumesDiskUsage = 0;
+
+  /// Docker API Version
+  String apiVersion;
+
+  /// Docker Version
+  String engineVersion;
+
+  // Minimal compatible version
+  String minAPIVersion;
+
+  /// Server Operating Systema
+  String operatingSystem;
+
+  /// Server Operating System Platform
+  String platform;
+
+  /// Server Architecture
+  String platformArchitecture;
+
+  /// Kernel Version
+  String kernelVersion;
+
+  /// Docker Root Directory on Server
+  String dockerRootDir;
+
+  /// Number of Created Containers
+  int numContainers;
+
+  /// Number of Containers Running
+  int numContainersRunning;
+
+  /// Number of Containers Paused
+  int numContainersPaused;
+
+  /// Number of Containers Stopped
+  int numContainersStopped;
+
+  /// Number of Pulled Images
+  int numImages;
+
+  /// Amount of Server CPU Cores
+  int cpuCores;
+
+  /// Amount of Server Memory
+  int memoryTotal;
 
   /// Images Space Usage in Bytes
   double get imagesDiskUsageBytes => _imagesDiskUsage;
@@ -127,10 +156,9 @@ class DockerAPI {
     var data = await _dio.get("/version");
     try {
       var json = jsonDecode(data.toString());
-      version = _getString(json['Version']);
+      engineVersion = _getString(json['Version']);
       apiVersion = _getString(json['ApiVersion']);
       minAPIVersion = _getString(json["MinAPIVersion"]);
-      goVersion = _getString(json["GoVersion"]);
       platform = _getString(json['Os']);
       platformArchitecture = _getString(json['Arch']);
       kernelVersion = _getString(json['KernelVersion']);
