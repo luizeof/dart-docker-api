@@ -13,20 +13,12 @@ class DockerContainer {
   List<DockerPort> ports = [];
   List<DockerLabel> labels = [];
 
-  DockerContainer(
-    this.id,
-    this.name,
-    this.image,
-    this.command,
-    this.created,
-    this.state,
-    this.status, [
-    List _ports,
-    List _labels,
-  ]) {
+  DockerContainer(this.id, this.name, this.image, this.command, this.created,
+      this.state, this.status,
+      [List _ports, List _labels]) {
     if (_ports.isNotEmpty) {
-      _ports.forEach((js) => ports.add(DockerPort.fromJson(js)));
-      _labels.forEach((kv) => labels.add(DockerLabel.fromJson(kv)));
+      _ports.forEach((items) => ports.add(DockerPort.fromJson(items)));
+      _labels.forEach((items) => labels.add(DockerLabel.fromJson(items)));
     }
   }
 }
