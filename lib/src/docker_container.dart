@@ -1,3 +1,6 @@
+import 'docker_mount.dart';
+import 'docker_port.dart';
+
 /// Docker Container
 class DockerContainer {
   String id;
@@ -31,9 +34,9 @@ class DockerContainer {
   bool attachStderr = false;
   bool tty = false;
   dynamic env = [];
-  List ports = [];
+  List<DockerPort> ports = [];
   dynamic args = [];
-  List mounts = [];
+  List<DockerMount> mounts = [];
   String workingDir;
   String entrypoint;
   String gatewayIpv4;
@@ -65,7 +68,7 @@ class DockerContainer {
     dynamic env,
     dynamic ports,
     dynamic args,
-    this.mounts,
+    dynamic mounts,
     this.finishedAt,
     this.gatewayIpv4,
     this.hostname,
@@ -83,15 +86,21 @@ class DockerContainer {
   }) {
     this.env = env.toList();
     this.args = args.toList();
+
+    for (int i = 0; i <= mounts.length - 1; i++) {
+      this.mounts.add(DockerMount.fromJson(mounts[i]));
+    }
     // Map Container Ports
     ports.forEach((key, value) {
       var items = value.toList();
       for (int i = 0; i <= value.length - 1; i++) {
-        print(items[i]);
-        this.ports.add([
-          key,
-          {'port': items[i]['HostPort'], 'ip': items[i]['HostIp']}
-        ]);
+        this.ports.add(
+              new DockerPort(
+                key,
+                items[i]['HostPort'],
+                items[i]['HostIp'],
+              ),
+            );
       }
     });
   }
