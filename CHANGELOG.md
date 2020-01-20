@@ -2,7 +2,12 @@
 
 ## 0.0.2
 
-- Docker Containers and Stats
+- Server Usage
+- Container Info:
+  - Envs
+  - Mounts
+  - Ports
+- Container Stats
 
 ## 0.0.1
 
