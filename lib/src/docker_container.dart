@@ -32,7 +32,7 @@ class DockerContainer {
   bool tty = false;
   dynamic env = [];
   dynamic binds = [];
-  dynamic ports = [];
+  List ports = [];
   dynamic args = [];
   String workingDir;
   String entrypoint;
@@ -62,10 +62,10 @@ class DockerContainer {
     this.cpuQuota,
     this.cpuShares,
     this.entrypoint,
-    this.env,
-    this.binds,
-    this.ports,
-    this.args,
+    dynamic env,
+    dynamic binds,
+    dynamic ports,
+    dynamic args,
     this.finishedAt,
     this.gatewayIpv4,
     this.hostname,
@@ -80,7 +80,14 @@ class DockerContainer {
     this.tty,
     this.user,
     this.workingDir,
-  });
+  }) {
+    this.env = env.toList();
+    this.binds = binds.toList();
+    this.args = args.toList();
+    ports.forEach((key, value) {
+      this.ports.add([key, value]);
+    });
+  }
 
   static DockerContainer fromJson(json) {
     return new DockerContainer(
@@ -120,7 +127,7 @@ class DockerContainer {
       localIpv4: json['NetworkSettings']['IPAddress'].toString(),
       macAddress: json['NetworkSettings']['MacAddress'].toString(),
       env: json['Config']['Env'],
-      binds: (json['HostConfig']['Binds']).toList(),
+      binds: (json['HostConfig']['Binds']),
       ports: json['NetworkSettings']['Ports'],
       args: json['Args'],
     );
