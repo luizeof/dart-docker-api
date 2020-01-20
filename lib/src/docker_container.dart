@@ -31,9 +31,9 @@ class DockerContainer {
   bool attachStderr = false;
   bool tty = false;
   dynamic env = [];
-  dynamic binds = [];
   List ports = [];
   dynamic args = [];
+  List mounts = [];
   String workingDir;
   String entrypoint;
   String gatewayIpv4;
@@ -63,9 +63,9 @@ class DockerContainer {
     this.cpuShares,
     this.entrypoint,
     dynamic env,
-    dynamic binds,
     dynamic ports,
     dynamic args,
+    this.mounts,
     this.finishedAt,
     this.gatewayIpv4,
     this.hostname,
@@ -82,10 +82,17 @@ class DockerContainer {
     this.workingDir,
   }) {
     this.env = env.toList();
-    this.binds = binds.toList();
     this.args = args.toList();
+    // Map Container Ports
     ports.forEach((key, value) {
-      this.ports.add([key, value]);
+      var items = value.toList();
+      for (int i = 0; i <= value.length - 1; i++) {
+        print(items[i]);
+        this.ports.add([
+          key,
+          {'port': items[i]['HostPort'], 'ip': items[i]['HostIp']}
+        ]);
+      }
     });
   }
 
@@ -127,9 +134,9 @@ class DockerContainer {
       localIpv4: json['NetworkSettings']['IPAddress'].toString(),
       macAddress: json['NetworkSettings']['MacAddress'].toString(),
       env: json['Config']['Env'],
-      binds: (json['HostConfig']['Binds']),
       ports: json['NetworkSettings']['Ports'],
       args: json['Args'],
+      mounts: json['Mounts'],
     );
   }
 }
