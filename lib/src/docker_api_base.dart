@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'dart:convert';
 
 import 'package:docker_api/src/docker_container.dart';
+import 'package:docker_api/src/docker_stats.dart';
 
 /// Docker API
 class DockerAPI {
@@ -207,5 +208,30 @@ class DockerAPI {
     return DockerContainer.fromJson(json);
     //   } catch (e) {}
     //   return null;
+  }
+
+  Future<DockerContainerStats> getContainerStats(String _hashid) async {
+    var data = await _dio.get('/containers/$_hashid/stats?stream=false');
+    try {
+      var json = jsonDecode(data.toString());
+      return DockerContainerStats(
+        read: DateTime.tryParse(json['read']),
+        pidStats: json['pids_stats']['current'],
+        num_procs: json['num_procs'],
+        now_cpu_stats_total_usage: json['cpu_stats']['cpu_usage']
+            ['total_usage'],
+        now_cpu_stats_system_usage: json['cpu_stats']['system_cpu_usage'],
+        now_cpu_stats_online_cpu: json['cpu_stats']['online_cpus'],
+        pre_cpu_stats_total_usage: json['precpu_stats']['cpu_usage']
+            ['total_usage'],
+        pre_cpu_stats_system_usage: json['precpu_stats']['system_cpu_usage'],
+        pre_cpu_stats_online_cpu: json['precpu_stats']['online_cpus'],
+        memory_limit: json['memory_stats']['limit'],
+        memory_max_usage: json['memory_stats']['max_usage'],
+        memory_usage: json['memory_stats']['usage'],
+      );
+    } catch (e) {
+      return null;
+    }
   }
 }

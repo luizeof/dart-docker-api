@@ -51,6 +51,7 @@ class DockerContainer {
   List<DockerPort> ports = [];
   List<DockerMount> mounts = [];
 
+  /// Container Id in Short Format
   String get shortId => this.id.substring(0, 11);
 
   DockerContainer({
