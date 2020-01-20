@@ -1,47 +1,55 @@
+import 'package:docker_api/src/docker_env.dart';
 import 'docker_mount.dart';
 import 'docker_port.dart';
 
 /// Docker Container
 class DockerContainer {
+  ///
   String id;
   String name;
   String image;
   String command;
   String path;
-  DateTime createdAt;
-  DateTime startedAt;
-  DateTime finishedAt;
   String stateStatus;
-  bool isRunning = false;
-  bool isPaused = false;
-  bool isRestarting = false;
-  bool isDead = false;
-  int pid = 0;
-  int exitCode = 0;
   String lastError;
-  int restartCount = 0;
-  bool autoRemove = false;
-  bool privileged = false;
-  bool publishAllPorts = false;
-  double cpuShares = 0;
-  double memoryLimit = 0;
-  double cpuPeriod = 0;
-  double cpuQuota = 0;
   String hostname;
   String user;
-  bool attachStdin = false;
-  bool attachStdout = false;
-  bool attachStderr = false;
-  bool tty = false;
-  dynamic env = [];
-  List<DockerPort> ports = [];
-  dynamic args = [];
-  List<DockerMount> mounts = [];
   String workingDir;
   String entrypoint;
   String gatewayIpv4;
   String localIpv4;
   String macAddress;
+
+  DateTime createdAt;
+  DateTime startedAt;
+  DateTime finishedAt;
+
+  int pid = 0;
+  int exitCode = 0;
+  int restartCount = 0;
+
+  bool autoRemove = false;
+  bool privileged = false;
+  bool publishAllPorts = false;
+  bool attachStdin = false;
+  bool attachStdout = false;
+  bool attachStderr = false;
+  bool tty = false;
+  bool isRunning = false;
+  bool isPaused = false;
+  bool isRestarting = false;
+  bool isDead = false;
+
+  double cpuShares = 0;
+  double memoryLimit = 0;
+  double cpuPeriod = 0;
+  double cpuQuota = 0;
+
+  dynamic args = [];
+
+  List<DockerEnv> env = [];
+  List<DockerPort> ports = [];
+  List<DockerMount> mounts = [];
 
   DockerContainer({
     this.id,
@@ -84,22 +92,25 @@ class DockerContainer {
     this.user,
     this.workingDir,
   }) {
-    this.env = env.toList();
     this.args = args.toList();
 
+    // Map Envs
+    for (int i = 0; i <= env.length - 1; i++) {
+      var e = env[i].toString().split('=');
+      this.env.add(new DockerEnv(e[0].toString(), e[1].toString()));
+    }
+
+    // Map Container Mounts
     for (int i = 0; i <= mounts.length - 1; i++) {
       this.mounts.add(DockerMount.fromJson(mounts[i]));
     }
+
     // Map Container Ports
     ports.forEach((key, value) {
       var items = value.toList();
       for (int i = 0; i <= value.length - 1; i++) {
         this.ports.add(
-              new DockerPort(
-                key,
-                items[i]['HostPort'],
-                items[i]['HostIp'],
-              ),
+              new DockerPort(key, items[i]['HostPort'], items[i]['HostIp']),
             );
       }
     });
