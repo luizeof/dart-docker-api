@@ -169,6 +169,8 @@ class DockerAPI {
       numImages = _getInt(json["Images"], 0);
       operatingSystem = _getString(json["OperatingSystem"]);
       dockerRootDir = _getString(json['DockerRootDir']);
+      cpuCores = _getInt(json['NCPU']);
+      memoryTotal = _getInt(json['MemTotal']);
       return json;
     } catch (e) {}
   }
