@@ -18,7 +18,7 @@ class DockerContainerResume {
   DateTime createdAt;
 
   ///
-  String get shortname => id.substring(1, 12);
+  String get shortname => id.substring(0, 11);
 
   ///
   bool get isRunning => (state == 'running');
@@ -36,18 +36,16 @@ class DockerContainerResume {
     this.image,
     this.state,
     this.status,
-    this.createdAt,
   );
 
   ///
   static DockerContainerResume fromJson(json) {
     return DockerContainerResume(
       json['Id'].toString(),
-      json['Name'].toString(),
+      json['Names'][0].toString().replaceAll('/', ''),
       json['Image'].toString(),
       json['State'].toString(),
       json['Status'].toString(),
-      DateTime.fromMillisecondsSinceEpoch(json['Created']),
     );
   }
 }
