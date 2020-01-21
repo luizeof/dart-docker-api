@@ -2,9 +2,10 @@ library docker_api;
 
 import 'package:dio/dio.dart';
 import 'dart:convert';
-
 import 'package:docker_api/src/docker_container.dart';
+import 'package:docker_api/src/docker_container_resume.dart';
 import 'package:docker_api/src/docker_stats.dart';
+import 'package:json_god/json_god.dart' as god;
 
 /// Docker API
 class DockerAPI {
@@ -207,10 +208,17 @@ class DockerAPI {
     var data = await _dio.get('/containers/$_hashid/json');
     try {
       var json = jsonDecode(data.toString());
-      return DockerContainer.fromJson(json);
+      return DockerContainer.fromJson(json.trim);
     } catch (e) {
       return null;
     }
+  }
+
+  Future<List<DockerContainerResume>> getContainers() async {
+    var _list = List<DockerContainerResume>();
+    var data = await _dio.get('/containers/json?stream=false');
+
+    return _list;
   }
 
   Future<DockerContainerStats> getContainerStats(String _hashid) async {

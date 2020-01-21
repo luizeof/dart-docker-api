@@ -8,3 +8,4 @@ environment:
 
 dependencies:
   dio: ^3.0.8
+  json_god: ^2.0.0-beta
