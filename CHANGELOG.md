@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.4
+
+- Get All Containers
+
 ## 0.0.3
 
 - Fixes

@@ -5,7 +5,6 @@ import 'dart:convert';
 import 'package:docker_api/src/docker_container.dart';
 import 'package:docker_api/src/docker_container_resume.dart';
 import 'package:docker_api/src/docker_stats.dart';
-import 'package:json_god/json_god.dart' as god;
 
 /// Docker API
 class DockerAPI {
@@ -216,8 +215,11 @@ class DockerAPI {
 
   Future<List<DockerContainerResume>> getContainers() async {
     var _list = List<DockerContainerResume>();
-    var data = await _dio.get('/containers/json?stream=false');
-
+    var data = await _dio.get('/containers/json');
+    var json = jsonDecode(data.toString());
+    for (int i = 0; i <= json.length - 1; i++) {
+      _list.add(DockerContainerResume.fromJson(json[i]));
+    }
     return _list;
   }
 

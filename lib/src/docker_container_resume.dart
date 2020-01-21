@@ -42,12 +42,12 @@ class DockerContainerResume {
   ///
   static DockerContainerResume fromJson(json) {
     return DockerContainerResume(
-      json['Id'],
-      json['Name'],
-      json['Image'],
-      json['State'],
-      json['Status'],
-      DateTime.parse(json['Created']),
+      json['Id'].toString(),
+      json['Name'].toString(),
+      json['Image'].toString(),
+      json['State'].toString(),
+      json['Status'].toString(),
+      DateTime.fromMillisecondsSinceEpoch(json['Created']),
     );
   }
 }
