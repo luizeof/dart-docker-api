@@ -1,6 +1,6 @@
 name: docker_api
 description: Docker Engine API for Dart and Flutter
-version: 0.0.5
+version: 0.0.6
 homepage: https://github.com/luizeof/dart-docker-api
 
 environment:

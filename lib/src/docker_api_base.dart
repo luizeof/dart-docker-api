@@ -215,7 +215,7 @@ class DockerAPI {
 
   Future<List<DockerContainerResume>> getContainers() async {
     var _list = List<DockerContainerResume>();
-    var data = await _dio.get('/containers/json');
+    var data = await _dio.get('/containers/json?all=true');
     var json = jsonDecode(data.toString());
     for (int i = 0; i <= json.length - 1; i++) {
       _list.add(DockerContainerResume.fromJson(json[i]));
